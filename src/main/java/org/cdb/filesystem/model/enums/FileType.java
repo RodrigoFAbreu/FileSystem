@@ -1,8 +1,5 @@
 package org.cdb.filesystem.model.enums;
 
-import lombok.Getter;
-
-@Getter
 public enum FileType
 {
     JPEG("image/jpeg", "jpeg"),
