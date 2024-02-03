@@ -1,5 +1,8 @@
 package org.cdb.filesystem.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum FileType
 {
     JPEG("image/jpeg", "jpeg"),
@@ -29,13 +32,4 @@ public enum FileType
         throw new IllegalArgumentException("No constant with text " + text + " found");
     }
 
-    public String getExtension()
-    {
-        return extension;
-    }
-
-    public String getMimeType()
-    {
-        return mimeType;
-    }
 }
