@@ -15,6 +15,7 @@ public class ApiFile extends ApiFileCommon
 {
     private Long id;
     private Integer fileSize;
+    private String owner;
     private Date creationDate;
     private Date updateDate;
     private Date deleteDate;

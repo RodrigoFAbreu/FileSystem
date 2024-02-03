@@ -25,11 +25,11 @@ public interface FilesApi
 
     @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET, produces = "application/json")
     ResponseEntity<ApiFileGetResponse> getFile(
-            @PathVariable("fileId") Integer fileId);
+            @PathVariable("fileId") Long fileId);
 
     @RequestMapping(value = "/files/detail/{fileId}", method = RequestMethod.GET, produces = "application/json")
     ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(
-            @PathVariable("fileId") Integer fileId);
+            @PathVariable("fileId") Long fileId);
 
     @RequestMapping(value = "/files/{fileId}", method = RequestMethod.PUT, consumes = "application/json")
     ResponseEntity<ApiFileUpdateResponse> updateFile(

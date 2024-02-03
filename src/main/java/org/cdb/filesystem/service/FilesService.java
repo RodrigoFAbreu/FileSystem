@@ -9,4 +9,6 @@ import org.springframework.stereotype.Component;
 public interface FilesService
 {
     ApiFile addFile(ApiFileAddRequest fileAddRequest);
+
+    ApiFile getFileById(Long aFileId);
 }

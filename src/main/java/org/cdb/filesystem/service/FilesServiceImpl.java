@@ -38,13 +38,21 @@ public class FilesServiceImpl implements FilesService
         return convertFileToApiFile(file);
     }
 
+    @Override
+    public ApiFile getFileById(Long aFileId)
+    {
+        File file = filesRepository.getReferenceById(aFileId);
+        return convertFileToApiFile(file);
+    }
+
     private ApiFile convertFileToApiFile(File file)
     {
         ApiFile apiFile = new ApiFile();
         apiFile.setId(file.getId());
         apiFile.setFileName(file.getFileName());
         apiFile.setFileType(file.getFileType().getMimeType());
-        apiFile.setFileSize(Math.toIntExact(file.getFileSize()));
+        apiFile.setFileSize(file.getFileSize());
+        apiFile.setOwner(file.getOwner());
         apiFile.setCreationDate(file.getCreateDate());
         apiFile.setUpdateDate(file.getUpdateDate());
         apiFile.setDeleteDate(file.getDeleteDate());

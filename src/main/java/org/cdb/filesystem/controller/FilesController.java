@@ -25,8 +25,8 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileAddResponse> addFile(ApiFileAddRequest aFileAddRequest)
     {
-        ApiFile addedFile = filesService.addFile(aFileAddRequest);
-        ApiFileAddResponse response = new ApiFileAddResponse(addedFile);
+        ApiFile apiFile = filesService.addFile(aFileAddRequest);
+        ApiFileAddResponse response = new ApiFileAddResponse(apiFile);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -38,13 +38,16 @@ public class FilesController implements FilesApi
     }
 
     @Override
-    public ResponseEntity<ApiFileGetResponse> getFile(Integer fileId)
+    public ResponseEntity<ApiFileGetResponse> getFile(Long fileId)
     {
-        return null;
+        ApiFile apiFile = filesService.getFileById(fileId);
+        ApiFileGetResponse response = new ApiFileGetResponse(apiFile);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(Integer fileId)
+    public ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(Long fileId)
     {
         return null;
     }
