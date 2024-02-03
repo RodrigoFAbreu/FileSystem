@@ -1,0 +1,306 @@
+openapi: 3.0.3
+info:
+  title: File System API
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1/filesystem/v1
+tags:
+  - name: Files
+paths:
+  /files:
+    get:
+      operationId: listFiles
+      tags:
+        - Files
+      summary: List files with filters
+      parameters:
+        - in: query
+          name: owner
+          schema:
+            type: string
+        - in: query
+          name: fileType
+          schema:
+            type: string
+        - in: query
+          name: filename
+          schema:
+            type: string
+        - in: query
+          name: orderByDate
+          schema:
+            type: string
+            enum: [ asc, desc ]
+      responses:
+        '200':
+          $ref: '#/components/responses/ListFiles200'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+    post:
+      operationId: addFile
+      tags:
+        - Files
+      summary: Add a new file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiFileAddRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/AddFile201'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /files/{fileId}:
+    get:
+      operationId: getFile
+      tags:
+        - Files
+      summary: Get file metadata
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFile200'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+    delete:
+      operationId: deleteFile
+      tags:
+        - Files
+      summary: Soft delete a file
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: File deleted successfully
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+    put:
+      operationId: updateFile
+      tags:
+        - Files
+      summary: Update file
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiFileUpdateRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateFile200'
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /files/detail/{fileId}:
+    get:
+      operationId: getFileDetails
+      tags:
+        - Files
+      summary: Detail file (metadata and data)
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFileDetails200'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+components:
+  schemas:
+    ApiFileCommon:
+      type: object
+      properties:
+        fileName:
+          type: string
+        fileType:
+          type: string
+    ApiFile:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+        - $ref: '#/components/schemas/ApiFileCommon'
+        - type: object
+          properties:
+            fileSize:
+              type: integer
+            creationDate:
+              type: string
+              format: date-time
+            updateDate:
+              type: string
+              format: date-time
+            deleteDate:
+              type: string
+              format: date-time
+    ApiFullFile:
+      allOf:
+        - $ref: '#/components/schemas/ApiFile'
+        - type: object
+          properties:
+            data:
+              type: string
+              format: byte
+    ApiFileAddRequest:
+      allOf:
+        - $ref: '#/components/schemas/ApiFileCommon'
+        - type: object
+          properties:
+            data:
+              type: string
+              format: byte
+    ApiFileUpdateRequest:
+      type: object
+      properties:
+        fileName:
+          type: string
+        fileType:
+          type: string
+        data:
+          type: string
+          format: byte
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+  responses:
+    Error400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Error401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Error403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Error404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Error500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    ListFiles200:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              files:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiFile'
+    GetFile200:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              file:
+                $ref: '#/components/schemas/ApiFile'
+    UpdateFile200:
+      description: File updated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              file:
+                $ref: '#/components/schemas/ApiFile'
+    GetFileDetails200:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              file:
+                $ref: '#/components/schemas/ApiFullFile'
+    AddFile201:
+      description: File successfuly added
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              file:
+                $ref: '#/components/schemas/ApiFile'

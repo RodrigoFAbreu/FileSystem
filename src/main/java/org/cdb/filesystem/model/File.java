@@ -1,17 +1,24 @@
 package org.cdb.filesystem.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.cdb.filesystem.dto.file.ApiFileAddRequest;
 import org.cdb.filesystem.model.enums.FileType;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "t_file")
+@Getter
+@Setter
+@NoArgsConstructor
 public class File
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String fileName;
@@ -21,7 +28,10 @@ public class File
     private FileType fileType;
 
     @Column(nullable = false)
-    private Long fileSize;
+    private Integer fileSize;
+
+    @Column(nullable = false)
+    private String owner;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -33,10 +43,16 @@ public class File
     @Temporal(TemporalType.TIMESTAMP)
     private Date deleteDate;
 
+    public File(ApiFileAddRequest aFileAddRequest)
+    {
+        this.fileName = aFileAddRequest.getFileName();
+        this.fileType = FileType.fromString(aFileAddRequest.getFileType());
+    }
+
     @PrePersist
     protected void onCreate()
     {
-        createDate = new Date();
+        createDate = updateDate = new Date();
     }
 
     @PreUpdate

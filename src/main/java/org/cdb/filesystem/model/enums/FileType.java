@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum FileType
 {
-    JPEG("image/jpeg", "jpg"),
+    JPEG("image/jpeg", "jpeg"),
     PNG("image/png", "png"),
     PDF("application/pdf", "pdf");
     // Add more file types as needed
@@ -30,5 +30,15 @@ public enum FileType
             }
         }
         throw new IllegalArgumentException("No constant with text " + text + " found");
+    }
+
+    public String getExtension()
+    {
+        return extension;
+    }
+
+    public String getMimeType()
+    {
+        return mimeType;
     }
 }
