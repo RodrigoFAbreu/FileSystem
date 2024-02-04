@@ -49,7 +49,10 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(Long fileId)
     {
-        return null;
+        ApiFullFile apiFullFile = filesService.getFileDetailsById(fileId);
+        ApiFileGetDetailsResponse response = new ApiFileGetDetailsResponse(apiFullFile);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override

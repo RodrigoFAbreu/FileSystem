@@ -2,6 +2,7 @@ package org.cdb.filesystem.service;
 
 import org.cdb.filesystem.dto.file.ApiFile;
 import org.cdb.filesystem.dto.file.ApiFileAddRequest;
+import org.cdb.filesystem.dto.file.ApiFullFile;
 import org.cdb.filesystem.model.File;
 import org.cdb.filesystem.model.FileData;
 import org.cdb.filesystem.repository.FilesDataRepository;
@@ -35,17 +36,24 @@ public class FilesServiceImpl implements FilesService
         fileData.setFileBlob(fileAddRequest.getData());
         filesDataRepository.save(fileData);
 
-        return convertFileToApiFile(file);
+        return convertToApiFile(file);
     }
 
     @Override
     public ApiFile getFileById(Long aFileId)
     {
         File file = filesRepository.getReferenceById(aFileId);
-        return convertFileToApiFile(file);
+        return convertToApiFile(file);
     }
 
-    private ApiFile convertFileToApiFile(File file)
+    @Override
+    public ApiFullFile getFileDetailsById(Long aFileId)
+    {
+        FileData fileData = filesDataRepository.getReferenceById(aFileId);
+        return convertToApiFullFile(fileData);
+    }
+
+    private ApiFile convertToApiFile(File file)
     {
         ApiFile apiFile = new ApiFile();
         apiFile.setId(file.getId());
@@ -57,6 +65,25 @@ public class FilesServiceImpl implements FilesService
         apiFile.setUpdateDate(file.getUpdateDate());
         apiFile.setDeleteDate(file.getDeleteDate());
         return apiFile;
+    }
+
+    private ApiFullFile convertToApiFullFile(FileData aFileData)
+    {
+        ApiFullFile apiFullFile = new ApiFullFile();
+        apiFullFile.setData(aFileData.getFileBlob());
+
+        File fileMetadata = aFileData.getFileMetadata();
+        apiFullFile.setId(fileMetadata.getId());
+        apiFullFile.setFileName(fileMetadata.getFileName());
+        apiFullFile.setFileType(fileMetadata.getFileType().getMimeType());
+        apiFullFile.setFileSize(fileMetadata.getFileSize());
+        apiFullFile.setOwner(fileMetadata.getOwner());
+        apiFullFile.setCreationDate(fileMetadata.getCreateDate());
+        apiFullFile.setUpdateDate(fileMetadata.getUpdateDate());
+        apiFullFile.setDeleteDate(fileMetadata.getDeleteDate());
+
+
+        return apiFullFile;
     }
 
     private int countBase64Size(String in)
