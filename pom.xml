@@ -54,14 +54,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
         </dependency>
 
         <dependency>
@@ -124,7 +119,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+            <!--<plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>7.2.0</version>
@@ -133,7 +128,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <!--<configuration>
+                        <configuration>
                             <inputSpec>
                                 ${project.basedir}/src/main/resources/swagger/filesystem.yml
                             </inputSpec>
@@ -150,10 +145,10 @@
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <useSpringController>true</useSpringController>
                             </configOptions>
-                        </configuration>-->
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

@@ -2,12 +2,16 @@ package org.cdb.filesystem.controller;
 
 import org.cdb.filesystem.api.FilesApi;
 import org.cdb.filesystem.dto.file.*;
+import org.cdb.filesystem.dto.file.enums.Order;
+import org.cdb.filesystem.model.enums.FileType;
 import org.cdb.filesystem.service.FilesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("filesystem/v1/")
@@ -32,14 +36,20 @@ public class FilesController implements FilesApi
     }
 
     @Override
-    public ResponseEntity<ApiFileListResponse> listFiles(String owner, String fileType, String filename, String orderByDate)
+    public ResponseEntity<ApiFileListResponse> listFiles(String owner, FileType fileType, String filename, Order orderByDate)
     {
-        return null;
+        // TODO: Only show none soft-deleted files
+        List<ApiFile> apiFile = filesService.listFiles(owner, fileType, filename, orderByDate);
+        ApiFileListResponse response = new ApiFileListResponse(apiFile);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<ApiFileGetResponse> getFile(Long fileId)
     {
+        // TODO: Only show none soft-deleted files if deleted return FileDeletedException
+
         ApiFile apiFile = filesService.getFileById(fileId);
         ApiFileGetResponse response = new ApiFileGetResponse(apiFile);
 
@@ -49,6 +59,8 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(Long fileId)
     {
+        // TODO: Only show none soft-deleted files if deleted return FileDeletedException
+
         ApiFullFile apiFullFile = filesService.getFileDetailsById(fileId);
         ApiFileGetDetailsResponse response = new ApiFileGetDetailsResponse(apiFullFile);
 

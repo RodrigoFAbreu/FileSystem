@@ -2,6 +2,7 @@ package org.cdb.filesystem.controller;
 
 import org.apache.coyote.BadRequestException;
 import org.cdb.filesystem.dto.file.ApiError;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
-public class GlobalExceptionHandler
+public class GlobalControllerExceptionHandler
 {
 
 //    @ExceptionHandler(ResourceNotFoundException.class)
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler
 //        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
 //    }
 
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler({BadRequestException.class, ConversionFailedException.class})
     public ResponseEntity<ApiError> handleBadRequestException(BadRequestException ex, WebRequest request)
     {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());

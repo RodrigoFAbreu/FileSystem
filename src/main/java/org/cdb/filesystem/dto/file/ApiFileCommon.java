@@ -9,4 +9,5 @@ public class ApiFileCommon
 {
     private String fileName;
     private String fileType;
+    private String owner;
 }

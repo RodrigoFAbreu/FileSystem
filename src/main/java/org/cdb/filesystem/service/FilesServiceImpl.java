@@ -3,11 +3,17 @@ package org.cdb.filesystem.service;
 import org.cdb.filesystem.dto.file.ApiFile;
 import org.cdb.filesystem.dto.file.ApiFileAddRequest;
 import org.cdb.filesystem.dto.file.ApiFullFile;
+import org.cdb.filesystem.dto.file.enums.Order;
 import org.cdb.filesystem.model.File;
 import org.cdb.filesystem.model.FileData;
+import org.cdb.filesystem.model.enums.FileType;
 import org.cdb.filesystem.repository.FilesDataRepository;
 import org.cdb.filesystem.repository.FilesRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FilesServiceImpl implements FilesService
@@ -26,7 +32,7 @@ public class FilesServiceImpl implements FilesService
     {
         File file = new File(fileAddRequest); // Assuming constructor sets fileName and fileType
         file.setFileSize(countBase64Size(fileAddRequest.getData()));
-        file.setOwner("test");
+        file.setOwner(fileAddRequest.getOwner());
 
 
         file = filesRepository.save(file);
@@ -51,6 +57,23 @@ public class FilesServiceImpl implements FilesService
     {
         FileData fileData = filesDataRepository.getReferenceById(aFileId);
         return convertToApiFullFile(fileData);
+    }
+
+    @Override
+    public List<ApiFile> listFiles(String owner, FileType fileType, String filename, Order orderByDate)
+    {
+        List<File> files = new ArrayList<>();
+
+        if (orderByDate == Order.ASC)
+        {
+            files = filesRepository.findByOwnerAndFileTypeAndFileNameOrderByCreateDateAsc(owner, fileType, filename);
+        }
+        else
+        {
+            files = filesRepository.findByOwnerAndFileTypeAndFileNameOrderByCreateDateDsc(owner, fileType, filename);
+        }
+
+        return files.stream().map(file -> convertToApiFile(file)).collect(Collectors.toList());
     }
 
     private ApiFile convertToApiFile(File file)

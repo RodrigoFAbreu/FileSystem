@@ -2,6 +2,8 @@ package org.cdb.filesystem.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cdb.filesystem.dto.file.*;
+import org.cdb.filesystem.dto.file.enums.Order;
+import org.cdb.filesystem.model.enums.FileType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -19,9 +21,9 @@ public interface FilesApi
     @RequestMapping(value = "/files", method = RequestMethod.GET, produces = "application/json")
     ResponseEntity<ApiFileListResponse> listFiles(
             @RequestParam(value = "owner", required = false) String owner,
-            @RequestParam(value = "fileType", required = false) String fileType,
+            @RequestParam(value = "fileType", required = false) FileType fileType,
             @RequestParam(value = "filename", required = false) String filename,
-            @RequestParam(value = "orderByDate", required = false) String orderByDate);
+            @RequestParam(value = "orderByDate", required = false) Order orderByDate);
 
     @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET, produces = "application/json")
     ResponseEntity<ApiFileGetResponse> getFile(
