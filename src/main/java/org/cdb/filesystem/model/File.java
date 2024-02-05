@@ -6,14 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.cdb.filesystem.dao.file.ApiFileAddRequest;
 import org.cdb.filesystem.model.enums.FileType;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "t_file")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "t_file")
+@SQLRestriction("delete_date is null")
 public class File
 {
     @Id

@@ -27,14 +27,14 @@ public class GlobalControllerExceptionHandler
     public ResponseEntity<ApiErrorResponse> handleMissingRequiredException(MissingRequiredException ex)
     {
         //HttpStatus.BAD_REQUEST.value(), ExceptionMessage.MISSING_REQUIRED, HttpStatus.BAD_REQUEST, LocalDateTime.now()
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(ex.getCode(), ex.getStatus(), ErrorEnum.MISSING_REQUIRED, ex.getTimestamp());
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(ex.getHttpCode(), ex.getStatus(), ErrorEnum.MISSING_REQUIRED, ex.getTimestamp());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiErrorResponse);
     }
 
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleFileNotFoundException(FileNotFoundException ex)
     {
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(ex.getCode(), ex.getStatus(), ErrorEnum.FILE_NOT_FOUND, ex.getTimestamp());
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(ex.getHttpCode(), ex.getStatus(), ErrorEnum.FILE_NOT_FOUND, ex.getTimestamp());
         return ResponseEntity.status(ex.getStatus()).body(apiErrorResponse);
     }
 //    @ExceptionHandler(UnauthorizedAccessException.class)

@@ -4,8 +4,8 @@ import lombok.extern.log4j.Log4j2;
 import org.cdb.filesystem.dao.file.ApiFile;
 import org.cdb.filesystem.dao.file.ApiFileAddRequest;
 import org.cdb.filesystem.dao.file.ApiFullFile;
+import org.cdb.filesystem.dao.file.enums.ErrorEnum;
 import org.cdb.filesystem.dao.file.enums.OrderEnum;
-import org.cdb.filesystem.exception.ExceptionMessage;
 import org.cdb.filesystem.exception.FileNotFoundException;
 import org.cdb.filesystem.model.File;
 import org.cdb.filesystem.model.FileData;
@@ -56,7 +56,7 @@ public class FilesServiceImpl implements FilesService
     public ApiFile getFileById(Long aFileId)
     {
         File file = filesRepository.findById(aFileId)
-                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), ExceptionMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND, LocalDateTime.now()));
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
         return convertToApiFile(file);
     }
 
@@ -64,7 +64,7 @@ public class FilesServiceImpl implements FilesService
     public ApiFullFile getFileDetailsById(Long aFileId)
     {
         FileData fileData = filesDataRepository.findById(aFileId)
-                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), ExceptionMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND, LocalDateTime.now()));
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
         return convertToApiFullFile(fileData);
     }
 
@@ -91,7 +91,7 @@ public class FilesServiceImpl implements FilesService
         // TODO: add check if its not already deleted
         // TODO: Add exception if id not found
         filesRepository.updateDeleteDateById(fileId, new Date())
-                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), ExceptionMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND, LocalDateTime.now()));
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
     }
 
     private ApiFile convertToApiFile(File file)

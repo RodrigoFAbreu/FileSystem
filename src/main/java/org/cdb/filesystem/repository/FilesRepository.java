@@ -13,10 +13,10 @@ import java.util.Optional;
 
 public interface FilesRepository extends JpaRepository<File, Long>
 {
-    @Query("select file from File file where (:owner is null or file.owner = :owner) and (:fileType is null or file.fileType = :fileType) and (:fileName is null or file.fileName = :fileName) and file.deleteDate is null order by file.createDate asc")
+    @Query("select file from File file where (:owner is null or file.owner = :owner) and (:fileType is null or file.fileType = :fileType) and (:fileName is null or file.fileName = :fileName) order by file.createDate asc")
     List<File> findByOwnerAndFileTypeAndFileNameOrderByCreateDateAsc(String owner, FileType fileType, String fileName);
 
-    @Query("select file from File file where (:owner is null or file.owner = :owner) and (:fileType is null or file.fileType = :fileType) and (:fileName is null or file.fileName = :fileName) and file.deleteDate is null order by file.createDate desc")
+    @Query("select file from File file where (:owner is null or file.owner = :owner) and (:fileType is null or file.fileType = :fileType) and (:fileName is null or file.fileName = :fileName) order by file.createDate desc")
     List<File> findByOwnerAndFileTypeAndFileNameOrderByCreateDateDsc(String owner, FileType fileType, String fileName);
 
     @Transactional
