@@ -1,8 +1,8 @@
 package org.cdb.filesystem.controller;
 
 import org.cdb.filesystem.api.FilesApi;
-import org.cdb.filesystem.dto.file.*;
-import org.cdb.filesystem.dto.file.enums.Order;
+import org.cdb.filesystem.dao.file.*;
+import org.cdb.filesystem.dao.file.enums.OrderEnum;
 import org.cdb.filesystem.model.enums.FileType;
 import org.cdb.filesystem.service.FilesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class FilesController implements FilesApi
     }
 
     @Override
-    public ResponseEntity<ApiFileListResponse> listFiles(String owner, FileType fileType, String filename, Order orderByDate)
+    public ResponseEntity<ApiFileListResponse> listFiles(String owner, FileType fileType, String filename, OrderEnum orderByDate)
     {
         // TODO: Only show none soft-deleted files
         List<ApiFile> apiFile = filesService.listFiles(owner, fileType, filename, orderByDate);
@@ -74,9 +74,11 @@ public class FilesController implements FilesApi
     }
 
     @Override
-    public ResponseEntity<Void> deleteFile(Integer fileId)
+    public ResponseEntity<Void> deleteFile(Long fileId)
     {
-        return null;
+        filesService.deleteFile(fileId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
 

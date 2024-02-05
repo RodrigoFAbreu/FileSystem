@@ -1,15 +1,17 @@
-package org.cdb.filesystem.dto.file;
+package org.cdb.filesystem.dao.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+import java.util.List;
+
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiFileGetDetailsResponse
+public class ApiFileListResponse
 {
-    private ApiFullFile file;
+    private List<ApiFile> files;
 }

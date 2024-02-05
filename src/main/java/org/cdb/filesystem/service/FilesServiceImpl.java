@@ -1,20 +1,27 @@
 package org.cdb.filesystem.service;
 
-import org.cdb.filesystem.dto.file.ApiFile;
-import org.cdb.filesystem.dto.file.ApiFileAddRequest;
-import org.cdb.filesystem.dto.file.ApiFullFile;
-import org.cdb.filesystem.dto.file.enums.Order;
+import lombok.extern.log4j.Log4j2;
+import org.cdb.filesystem.dao.file.ApiFile;
+import org.cdb.filesystem.dao.file.ApiFileAddRequest;
+import org.cdb.filesystem.dao.file.ApiFullFile;
+import org.cdb.filesystem.dao.file.enums.OrderEnum;
+import org.cdb.filesystem.exception.ExceptionMessage;
+import org.cdb.filesystem.exception.FileNotFoundException;
 import org.cdb.filesystem.model.File;
 import org.cdb.filesystem.model.FileData;
 import org.cdb.filesystem.model.enums.FileType;
 import org.cdb.filesystem.repository.FilesDataRepository;
 import org.cdb.filesystem.repository.FilesRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 public class FilesServiceImpl implements FilesService
 {
@@ -48,32 +55,43 @@ public class FilesServiceImpl implements FilesService
     @Override
     public ApiFile getFileById(Long aFileId)
     {
-        File file = filesRepository.getReferenceById(aFileId);
+        File file = filesRepository.findById(aFileId)
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), ExceptionMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND, LocalDateTime.now()));
         return convertToApiFile(file);
     }
 
     @Override
     public ApiFullFile getFileDetailsById(Long aFileId)
     {
-        FileData fileData = filesDataRepository.getReferenceById(aFileId);
+        FileData fileData = filesDataRepository.findById(aFileId)
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), ExceptionMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND, LocalDateTime.now()));
         return convertToApiFullFile(fileData);
     }
 
     @Override
-    public List<ApiFile> listFiles(String owner, FileType fileType, String filename, Order orderByDate)
+    public List<ApiFile> listFiles(String owner, FileType fileType, String filename, OrderEnum orderByDate)
     {
         List<File> files = new ArrayList<>();
 
-        if (orderByDate == Order.ASC)
-        {
-            files = filesRepository.findByOwnerAndFileTypeAndFileNameOrderByCreateDateAsc(owner, fileType, filename);
-        }
-        else
+        if (orderByDate == OrderEnum.DESC)
         {
             files = filesRepository.findByOwnerAndFileTypeAndFileNameOrderByCreateDateDsc(owner, fileType, filename);
         }
+        else
+        {
+            files = filesRepository.findByOwnerAndFileTypeAndFileNameOrderByCreateDateAsc(owner, fileType, filename);
+        }
 
-        return files.stream().map(file -> convertToApiFile(file)).collect(Collectors.toList());
+        return files.stream().map(this::convertToApiFile).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteFile(Long fileId)
+    {
+        // TODO: add check if its not already deleted
+        // TODO: Add exception if id not found
+        filesRepository.updateDeleteDateById(fileId, new Date())
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), ExceptionMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND, LocalDateTime.now()));
     }
 
     private ApiFile convertToApiFile(File file)

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.cdb.filesystem.dto.file.ApiFileAddRequest;
+import org.cdb.filesystem.dao.file.ApiFileAddRequest;
 import org.cdb.filesystem.model.enums.FileType;
 
 import java.util.Date;

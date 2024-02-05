@@ -1,4 +1,4 @@
-package org.cdb.filesystem.dto.file;
+package org.cdb.filesystem.dao.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiFileAddResponse
+public class ApiFileGetResponse
 {
     private ApiFile file;
 }

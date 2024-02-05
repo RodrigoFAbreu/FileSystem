@@ -1,4 +1,4 @@
-package org.cdb.filesystem.dto.file;
+package org.cdb.filesystem.dao.file;
 
 import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiFileAddRequest extends ApiFileCommon
+public class ApiFullFile extends ApiFile
 {
     @Lob
     private String data;

@@ -1,8 +1,8 @@
 package org.cdb.filesystem.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.cdb.filesystem.dto.file.*;
-import org.cdb.filesystem.dto.file.enums.Order;
+import org.cdb.filesystem.dao.file.*;
+import org.cdb.filesystem.dao.file.enums.OrderEnum;
 import org.cdb.filesystem.model.enums.FileType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public interface FilesApi
             @RequestParam(value = "owner", required = false) String owner,
             @RequestParam(value = "fileType", required = false) FileType fileType,
             @RequestParam(value = "filename", required = false) String filename,
-            @RequestParam(value = "orderByDate", required = false) Order orderByDate);
+            @RequestParam(value = "orderByDate", required = false) OrderEnum orderByDate);
 
     @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET, produces = "application/json")
     ResponseEntity<ApiFileGetResponse> getFile(
@@ -40,5 +40,5 @@ public interface FilesApi
 
     @RequestMapping(value = "/files/{fileId}", method = RequestMethod.DELETE)
     ResponseEntity<Void> deleteFile(
-            @PathVariable("fileId") Integer fileId);
+            @PathVariable("fileId") Long fileId);
 }

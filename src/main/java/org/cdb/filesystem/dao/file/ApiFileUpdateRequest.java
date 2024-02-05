@@ -1,4 +1,4 @@
-package org.cdb.filesystem.dto.file;
+package org.cdb.filesystem.dao.file;
 
 public class ApiFileUpdateRequest
 {
