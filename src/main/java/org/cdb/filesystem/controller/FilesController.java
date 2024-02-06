@@ -38,7 +38,6 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileListResponse> listFiles(String owner, FileType fileType, String filename, OrderEnum orderByDate)
     {
-        // TODO: Only show none soft-deleted files
         List<ApiFile> apiFile = filesService.listFiles(owner, fileType, filename, orderByDate);
         ApiFileListResponse response = new ApiFileListResponse(apiFile);
 
@@ -48,8 +47,6 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileGetResponse> getFile(Long fileId)
     {
-        // TODO: Only show none soft-deleted files if deleted return FileDeletedException
-
         ApiFile apiFile = filesService.getFileById(fileId);
         ApiFileGetResponse response = new ApiFileGetResponse(apiFile);
 
@@ -59,8 +56,6 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(Long fileId)
     {
-        // TODO: Only show none soft-deleted files if deleted return FileDeletedException
-
         ApiFullFile apiFullFile = filesService.getFileDetailsById(fileId);
         ApiFileGetDetailsResponse response = new ApiFileGetDetailsResponse(apiFullFile);
 
