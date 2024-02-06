@@ -88,8 +88,6 @@ public class FilesServiceImpl implements FilesService
     @Override
     public void deleteFile(Long fileId)
     {
-        // TODO: add check if its not already deleted
-        // TODO: Add exception if id not found
         filesRepository.updateDeleteDateById(fileId, new Date())
                 .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
     }
