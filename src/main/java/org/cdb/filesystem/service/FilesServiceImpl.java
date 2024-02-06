@@ -3,6 +3,7 @@ package org.cdb.filesystem.service;
 import lombok.extern.log4j.Log4j2;
 import org.cdb.filesystem.dao.file.ApiFile;
 import org.cdb.filesystem.dao.file.ApiFileAddRequest;
+import org.cdb.filesystem.dao.file.ApiFileUpdateRequest;
 import org.cdb.filesystem.dao.file.ApiFullFile;
 import org.cdb.filesystem.dao.file.enums.ErrorEnum;
 import org.cdb.filesystem.dao.file.enums.OrderEnum;
@@ -14,11 +15,13 @@ import org.cdb.filesystem.repository.FilesDataRepository;
 import org.cdb.filesystem.repository.FilesRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -35,6 +38,7 @@ public class FilesServiceImpl implements FilesService
     }
 
     @Override
+    @Transactional
     public ApiFile addFile(ApiFileAddRequest fileAddRequest)
     {
         File file = new File(fileAddRequest); // Assuming constructor sets fileName and fileType
@@ -53,7 +57,7 @@ public class FilesServiceImpl implements FilesService
     }
 
     @Override
-    public ApiFile getFileById(Long aFileId)
+    public ApiFile getFile(Long aFileId)
     {
         File file = filesRepository.findById(aFileId)
                 .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
@@ -61,7 +65,7 @@ public class FilesServiceImpl implements FilesService
     }
 
     @Override
-    public ApiFullFile getFileDetailsById(Long aFileId)
+    public ApiFullFile getFileDetails(Long aFileId)
     {
         FileData fileData = filesDataRepository.findById(aFileId)
                 .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
@@ -83,6 +87,38 @@ public class FilesServiceImpl implements FilesService
         }
 
         return files.stream().map(this::convertToApiFile).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ApiFullFile updateFile(Long fileId, ApiFileUpdateRequest updateRequest)
+    {
+        // Find the existing file
+        File file = filesRepository.findById(fileId)
+                .orElseThrow(() -> new FileNotFoundException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ErrorEnum.FILE_NOT_FOUND, LocalDateTime.now()));
+
+        // Update file metadata
+        file.setFileName(updateRequest.getFileName());
+        file.setFileType(FileType.fromString(updateRequest.getFileType()));
+        file.setOwner(updateRequest.getOwner());
+        file.setUpdateDate(new Date());
+
+        // Assuming fileSize is calculated based on the data string length
+        file.setFileSize(updateRequest.getData().length());
+
+        // Save the updated file metadata
+        file = filesRepository.save(file);
+
+        // Update the file data
+        Optional<FileData> fileDataOptional = filesDataRepository.findByFileMetadata_Id(fileId);
+        FileData fileData = fileDataOptional.orElse(new FileData());
+        fileData.setFileMetadata(file);
+        fileData.setFileBlob(updateRequest.getData());
+
+        // Save the updated file data
+        filesDataRepository.save(fileData);
+
+        return convertToApiFullFile(fileData);
     }
 
     @Override

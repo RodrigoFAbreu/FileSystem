@@ -8,13 +8,11 @@ import org.cdb.filesystem.service.FilesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("filesystem/v1/")
 public class FilesController implements FilesApi
 {
 
@@ -47,7 +45,7 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileGetResponse> getFile(Long fileId)
     {
-        ApiFile apiFile = filesService.getFileById(fileId);
+        ApiFile apiFile = filesService.getFile(fileId);
         ApiFileGetResponse response = new ApiFileGetResponse(apiFile);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -56,16 +54,19 @@ public class FilesController implements FilesApi
     @Override
     public ResponseEntity<ApiFileGetDetailsResponse> getFileDetails(Long fileId)
     {
-        ApiFullFile apiFullFile = filesService.getFileDetailsById(fileId);
+        ApiFullFile apiFullFile = filesService.getFileDetails(fileId);
         ApiFileGetDetailsResponse response = new ApiFileGetDetailsResponse(apiFullFile);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<ApiFileUpdateResponse> updateFile(Integer fileId, ApiFileUpdateRequest fileUpdateRequest)
+    public ResponseEntity<ApiFileUpdateResponse> updateFile(Long fileId, ApiFileUpdateRequest fileUpdateRequest)
     {
-        return null;
+        ApiFullFile apiFullFile = filesService.updateFile(fileId, fileUpdateRequest);
+        ApiFileUpdateResponse response = new ApiFileUpdateResponse(apiFullFile);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
